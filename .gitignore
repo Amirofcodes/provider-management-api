@@ -56,3 +56,6 @@ Thumbs.db
 
 codebase.md 
 .aigitignore
+.env
+.env.local
+.env.local.dist
