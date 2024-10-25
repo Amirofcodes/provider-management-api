@@ -26,14 +26,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy existing application directory
+# Copy composer files first for better caching
+COPY composer.json composer.lock* ./
+
+# Install dependencies
+RUN composer install --no-scripts --no-autoloader
+
+# Copy the rest of the application
 COPY . .
 
-# Install dependencies (including dev for development environment)
-RUN composer install
+# Generate autoloader and run scripts
+RUN composer dump-autoload --optimize && \
+    composer run-script post-install-cmd
 
 # Set permissions
 RUN chown -R www-data:www-data var
 
-# Expose port 9000 for PHP-FPM
 EXPOSE 9000
