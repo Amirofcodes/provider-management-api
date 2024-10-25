@@ -1,44 +1,58 @@
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
+# Lock files
+composer.lock
+symfony.lock
+
+# Symfony runtime files
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+/config/secrets/**/
+/config/*.local.php
+/config/*.local.yaml
+/config/secrets/
+
+# Cache, sessions files and logs
 /var/
+/var/cache/*
+/var/log/*
+/var/sessions/*
+!var/cache/.gitkeep
+!var/log/.gitkeep
+!var/sessions/.gitkeep
+
+# Parameters
+/config/parameters.yml
+/config/*.local.yml
+
+# Managed by Composer
 /vendor/
-###< symfony/framework-bundle ###
+/vendor/**/
 
-###> IDE files ###
-.idea/
-.vscode/
-###< IDE files ###
-
-###> Docker ###
-docker-compose.override.yml
-###< Docker ###
-
-###> Testing ###
-.phpunit.result.cache
-###< Testing ###
-
-codebase.md
-.aidigestignore
-
-###> OS ###
-.DS_Store
-Thumbs.db
-###< OS ###
-
-###> PHPUnit ###
+# PHPUnit
 /phpunit.xml
 .phpunit.result.cache
-###< PHPUnit ###
+/phpunit.xml.dist
 
-# Environment files
-.env
-.env.local
-.env.*.local
-.env.test
-.env.test.local
-.env.prod
-.env.prod.local
+# Build data
+/build/
+
+# Backup entities generated with doctrine:generate:entities command
+**/Entity/*~
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+
+# Logs
+*.log
+
+# System Files
+.DS_Store
+Thumbs.db
+
+codebase.md 
+.aigitignore
