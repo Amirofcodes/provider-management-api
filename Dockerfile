@@ -1,3 +1,9 @@
+FROM --platform=linux/arm64 composer:latest as composer
+
+WORKDIR /app
+COPY composer.* ./
+RUN composer install --no-dev --no-scripts --no-autoloader
+
 FROM --platform=linux/arm64 php:8.3-fpm
 
 # Install system dependencies
@@ -20,31 +26,16 @@ RUN docker-php-ext-install \
 # Install Redis extension
 RUN pecl install redis && docker-php-ext-enable redis
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set working directory
 WORKDIR /var/www
 
-# Copy composer files first
-COPY composer.json composer.lock* ./
-
-# Set environment to dev by default (override in production)
-ARG APP_ENV=dev
-
-# Install dependencies
-RUN if [ "$APP_ENV" = "prod" ]; then \
-        composer install --no-dev --optimize-autoloader --no-scripts; \
-    else \
-        composer install --optimize-autoloader --no-scripts; \
-    fi
-
-# Copy the rest of the application
+# Copy composer files
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer /app/vendor/ ./vendor/
 COPY . .
 
-# Create var directory and set permissions
-RUN mkdir -p var/cache var/log \
-    && composer dump-autoload --optimize \
+# Install dependencies and generate autoload files
+RUN composer dump-autoload --optimize \
+    && mkdir -p var/cache var/log \
     && chown -R www-data:www-data var
 
 EXPOSE 9000
