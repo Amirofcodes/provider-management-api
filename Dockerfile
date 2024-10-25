@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM --platform=linux/arm64 php:8.3-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,11 +29,11 @@ WORKDIR /var/www
 # Copy existing application directory
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies (including dev for development environment)
+RUN composer install
 
 # Set permissions
 RUN chown -R www-data:www-data var
 
-# Expose port 8000 for Symfony server
-EXPOSE 8000
+# Expose port 9000 for PHP-FPM
+EXPOSE 9000
