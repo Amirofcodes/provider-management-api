@@ -23,3 +23,8 @@ docker-compose.override.yml
 
 codebase.md
 .aidigestignore
+
+###> OS ###
+.DS_Store
+Thumbs.db
+###< OS ###
