@@ -26,20 +26,27 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first for better caching
+# Copy composer files first
 COPY composer.json composer.lock* ./
 
+# Set environment to dev by default (override in production)
+ARG APP_ENV=dev
+
 # Install dependencies
-RUN composer install --no-scripts --no-autoloader
+RUN if [ "$APP_ENV" = "prod" ]; then \
+        composer install --no-dev --optimize-autoloader --no-scripts; \
+    else \
+        composer install --optimize-autoloader --no-scripts; \
+    fi
 
 # Copy the rest of the application
 COPY . .
 
-# Generate autoloader and run scripts
-RUN composer dump-autoload --optimize && \
-    composer run-script post-install-cmd
-
-# Set permissions
-RUN chown -R www-data:www-data var
+# Create var directory and set permissions
+RUN mkdir -p var/cache var/log \
+    && composer dump-autoload --optimize \
+    && chown -R www-data:www-data var
 
 EXPOSE 9000
+
+CMD ["php-fpm"]
