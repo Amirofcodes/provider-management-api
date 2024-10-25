@@ -59,3 +59,9 @@ codebase.md
 .env
 .env.local
 .env.local.dist
+
+# Docker
+/docker/mysql/data/
+/docker/redis/data/
+.docker-sync
+docker-compose.override.yml
